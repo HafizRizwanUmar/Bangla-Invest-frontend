@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model BajusRate {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  date       DateTime @unique
+  k22_vori   Int
+  k21_vori   Int
+  k18_vori   Int
+  trad_vori  Int
+  change_amt Int?
+  reason     String?
+  created_at DateTime @default(now())
+
+  @@map("bajus_rates")
+}
+
+model GlobalMetric {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  date        DateTime @unique
+  spot_usd    Float
+  usd_bdt     Float
+  spot_source String?
+
+  @@map("global_metrics")
+}

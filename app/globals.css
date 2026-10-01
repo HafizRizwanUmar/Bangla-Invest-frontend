@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import legacy App.css for now to maintain styles during migration */
+@import '../src/App.css';
