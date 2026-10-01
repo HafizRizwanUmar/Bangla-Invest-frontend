@@ -415,6 +415,31 @@ renderAll();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ charts.forEach(function(c){ if (c._redraw) c._redraw(); }); });
 wireCaps();
 
+// Fetch live data from Firebase Backend
+fetch('https://banglainvestbackend.vercel.app/api/stats')
+  .then(res => res.json())
+  .then(stats => {
+    if (stats && stats.length > 0) {
+      const latestPrice = stats[0].value;
+      const d = new Date(stats[0].date);
+      
+      // Update the RAW data object with the live price
+      RAW.bajus.perVori.k22 = latestPrice;
+      // Calculate other purities proportionally based on original ratios
+      RAW.bajus.perVori.k21 = Math.round(latestPrice * (220391/230772));
+      RAW.bajus.perVori.k18 = Math.round(latestPrice * (189248/230772));
+      RAW.bajus.perVori.trad = Math.round(latestPrice * (154256/230772));
+      
+      RAW.asOf = d.toISOString().split('T')[0];
+      RAW.asOfLabel = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      // Rebuild data and update the screen!
+      build();
+      renderAll();
+    }
+  })
+  .catch(err => console.error("Failed to fetch live stats:", err));
+
   }, []);
 
   return (
